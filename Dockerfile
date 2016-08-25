@@ -6,4 +6,4 @@ RUN cd /tmp/scaler &&  ./gradlew installDist && mv build/install/scaler /scaler
 
 WORKDIR /scaler
 
-CMD [/scaler/bin/scaler]
+CMD [./bin/scaler]
