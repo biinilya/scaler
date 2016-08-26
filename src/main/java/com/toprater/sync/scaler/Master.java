@@ -11,21 +11,32 @@ import static spark.Spark.*;
 public class Master{
     private final static Logger log = LoggerFactory.getLogger(Master.class);
 
+    private static SyncReceiver receiver;
+    private static SyncSender sender;
     public static void main(String[] args) throws Exception {
         port(7476);
         Gson gson = new Gson();
-        new Thread(new SyncTest()).start();
-        new Thread(new SyncReceiver()).start();
+        sender = new SyncSender();
+        new Thread(sender).start();
         get("/prepare", (request, response) -> {
             log.info("prepare");
+            if (receiver!=null){
+                receiver.stop();
+            }
+            receiver = new SyncReceiver();
             return "";
         });
         get("/started","application/json", (request, response) -> {
             log.info("started");
+            if(receiver==null){
+                System.exit(1);
+            }
+            new Thread(receiver).start();
             return new StartMessage();
         },gson::toJson);
         post("/push", (request, response) -> {
             log.info("push");
+            sender.send(request.body());
             return "";
         });
     }
