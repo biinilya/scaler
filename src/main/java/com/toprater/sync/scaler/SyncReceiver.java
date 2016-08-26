@@ -50,7 +50,7 @@ public class SyncReceiver implements Runnable{
                     log.info("Receive Ping" + record.key() + ":" + record.value());
                 } else{
                     log.info("Receive Task" + record.key() + ":" + record.value());
-                    if (record.key().startsWith(id+"_")){
+                    if (!record.key().startsWith(id+"_")){
                         String task = record.value();
                         try {
                             URL u = new URL("http://127.0.0.1/sync");
@@ -67,6 +67,8 @@ public class SyncReceiver implements Runnable{
                         catch (Exception e){
                             e.printStackTrace();
                         }
+                    } else{
+                        log.info("Ignore self task");
                     }
                 }
             }
