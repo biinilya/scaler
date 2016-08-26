@@ -4,14 +4,20 @@ package com.toprater.sync.scaler;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.utils.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.concurrent.Future;
 
-public class SyncTest implements Runnable{
+public class SyncTest implements Runnable {
     private final Producer<String, String> producer;
     private final String id;
-    public SyncTest(){
+    private final static Logger log = LoggerFactory.getLogger(SyncTest.class);
+
+    public SyncTest() {
         Properties props = new Properties();
         props.put("bootstrap.servers", "kafka:9092");
         props.put("acks", "all");
@@ -22,24 +28,27 @@ public class SyncTest implements Runnable{
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         String id = System.getenv("INSTANCE_ID");
-        if(id==null || id.length()<1){
+        if (id == null || id.length() < 1) {
             id = "1";
         }
         this.id = id;
         producer = new KafkaProducer<>(props);
 
     }
+
     @Override
     public void run() {
+        log.info("Send "+id);
         long i = 0;
-        while (true){
+        while (true) {
             try {
                 Thread.currentThread().sleep(10000);
-            } catch (Exception e){
+                RecordMetadata meta = producer.send(new ProducerRecord<String, String>
+                        ("sync", "$test:" + id + i, "test-i")).get();
+                log.info("Send ",meta.partition());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            producer.send(new ProducerRecord<String, String>
-                    ("sync","$test:"+id+i,"test-i"));
             i++;
         }
     }

@@ -35,12 +35,11 @@ public class SyncReceiver implements Runnable{
 
     @Override
     public void run() {
+        log.info("Listen "+id);
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records){
-                if (record.key().startsWith("$test:")){
-                    log.info("Receive "+record.key()+":"+record.value());
-                }
+                log.info("Receive "+record.key()+":"+record.value());
             }
         }
     }

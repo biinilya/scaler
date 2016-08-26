@@ -14,8 +14,8 @@ public class Master{
     public static void main(String[] args) throws Exception {
         port(7476);
         Gson gson = new Gson();
-        new Thread(new SyncTest()).run();
-        new Thread(new SyncReceiver()).run();
+        new Thread(new SyncTest()).start();
+        new Thread(new SyncReceiver()).start();
         get("/prepare", (request, response) -> {
             log.info("prepare");
             return "";
