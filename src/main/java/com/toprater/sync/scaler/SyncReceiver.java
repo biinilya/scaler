@@ -53,7 +53,7 @@ public class SyncReceiver implements Runnable{
                     if (!record.key().startsWith(id+"_")){
                         String task = record.value();
                         try {
-                            URL u = new URL("http://127.0.0.1/sync");
+                            URL u = new URL("http://127.0.0.1:8080/sync");
                             HttpURLConnection conn = (HttpURLConnection) u.openConnection();
                             conn.setDoOutput(true);
                             conn.setRequestMethod("POST");

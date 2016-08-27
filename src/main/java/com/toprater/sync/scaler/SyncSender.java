@@ -51,7 +51,7 @@ public class SyncSender implements Runnable {
         String type;
         while (true) {
             try {
-                String task = tasks.poll(10, TimeUnit.SECONDS);
+                String task = tasks.poll(1, TimeUnit.MINUTES);
                 if (task==null){
                     type  = "ping";
                     producer.send(new ProducerRecord<String, String>
@@ -62,6 +62,7 @@ public class SyncSender implements Runnable {
                             ("sync", id +"_"+i, task));
                 }
                 log.info("Send: "+i+" - "+type);
+                i++;
             } catch (Exception e) {
                 e.printStackTrace();
             }
