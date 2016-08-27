@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 import static spark.Spark.*;
 
 public class Master{
@@ -13,6 +15,7 @@ public class Master{
 
     private static SyncReceiver receiver;
     private static SyncSender sender;
+    public static final LinkedBlockingQueue<String> tasks = new LinkedBlockingQueue<String>();
     public static void main(String[] args) throws Exception {
         port(7476);
         Gson gson = new Gson();
