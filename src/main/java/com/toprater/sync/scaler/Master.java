@@ -20,18 +20,22 @@ public class Master{
         new Thread(sender).start();
         get("/prepare", (request, response) -> {
             log.info("prepare");
-            if (receiver!=null){
-                receiver.stop();
+            synchronized(Master.class) {
+                if (receiver != null) {
+                    receiver.stop();
+                }
+                receiver = new SyncReceiver();
             }
-            receiver = new SyncReceiver();
             return "";
         });
         get("/started","application/json", (request, response) -> {
             log.info("started");
-            if(receiver==null){
-                System.exit(1);
+            synchronized(Master.class) {
+                if (receiver == null) {
+                    System.exit(1);
+                }
+                new Thread(receiver).start();
             }
-            new Thread(receiver).start();
             return new StartMessage();
         },gson::toJson);
         post("/push", (request, response) -> {
