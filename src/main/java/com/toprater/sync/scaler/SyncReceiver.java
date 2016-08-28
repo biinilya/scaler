@@ -63,6 +63,8 @@ public class SyncReceiver implements Runnable{
                             os.write(task.getBytes());
                             os.flush();
                             os.close();
+                            conn.getInputStream().close();
+                            log.info("API response: "+conn.getResponseCode()+" = "+conn.getResponseCode());
                         }
                         catch (Exception e){
                             e.printStackTrace();
