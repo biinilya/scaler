@@ -32,6 +32,7 @@ public class Master{
             log.info("started");
             synchronized(Master.class) {
                 if (receiver == null) {
+                    log.info("EXIT bad logic!!!");
                     System.exit(1);
                 }
                 new Thread(receiver).start();
